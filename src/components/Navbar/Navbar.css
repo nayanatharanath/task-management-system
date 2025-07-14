@@ -1,0 +1,125 @@
+.navbar {
+  font-family: inherit;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: white;
+  border-bottom: 1px solid white;
+}
+
+.navbar-logo h3 {
+  margin: 0;
+  font-size: 30px;
+  color: #200a41;
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-buttons button {
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.navbar-button-sign-in button {
+  background-color: #200a41;
+  color: white;
+  font-weight: bold;
+  
+  padding: 0.35em;
+  padding-left: 1.2em;
+  font-size: 17px;
+  border-radius: 0.9em;
+  border: none;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 0 1.6em -0.6em #200a41;
+  overflow: hidden;
+  position: relative;
+  height: 2.8em;
+  padding-right: 3.3em;
+  cursor: pointer;
+}
+
+.navbar-button-sign-in .navbar-button-sign-in-icon {
+  background: white;
+  margin-left: 1em;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.2em;
+  width: 2.2em;
+  border-radius: 0.7em;
+  box-shadow: 0.1em 0.1em 0.6em 0.2em #200a41;
+  right: 0.3em;
+  transition: all 0.3s;
+}
+
+.navbar-button-sign-in button:hover .navbar-button-sign-in-icon {
+  width: calc(100% - 0.6em);
+}
+
+.navbar-button-sign-in .navbar-button-sign-in-icon svg {
+  width: 1.1em;
+  transition: transform 0.3s;
+  color: #200a41;
+}
+
+.navbar-button-sign-in:hover .navbar-button-sign-in-icon svg {
+  transform: translateX(0.1em);
+}
+
+.navbar-button-sign-in:active .navbar-button-sign-in-icon {
+  transform: scale(0.95);
+}
+
+.navbar-button-sign-in button:hover {
+  background-color: white;
+  color: #200a41;
+  transform: scale(1.05);
+}
+
+.navbar-button-sign-up button {
+  background-color: white;
+  color: #200a41;
+  font-weight: bold;
+  /* box-shadow: rgb(41, 16, 134) 0 0 8px; */
+  transition: all 0.5s ease;
+}
+
+.navbar-button-sign-up button:hover {
+  color: white;
+  transform: scale(1.05);
+  background-color: #200a41;
+  box-shadow: #200a41;
+  letter-spacing: 3px;
+}
+
+.navbar-button-sign-up button:active{
+  background-color: #200a41;
+  color: hsl(0, 0%, 100%);
+  box-shadow: #200a41 0px 0px 0px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
+}
+
+/* responsive layout */
+@media (max-width: 768px) {
+  .navbar-buttons {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .navbar-buttons button {
+    width: 100%;
+  }
+}
