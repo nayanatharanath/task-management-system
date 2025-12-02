@@ -1,51 +1,84 @@
-import { PRIORITY_CONFIG, STATUS_CONFIG } from "../../utils/tasks";
+import React, { useState } from 'react';
+import { PRIORITY_CONFIG, STATE_CONFIG } from '../../utils/tasks';
+import { useTasks } from '../../context/TaskContext';
+import './TaskItem.css';
 
-// Component for displaying the list of tasks.
 const TaskItem = ({ task, onEdit, onDelete }) => {
+  const { deleteTask } = useTasks();
+  const [deleting, setDeleting] = useState(false);
+
   const priorityConfig = PRIORITY_CONFIG[task.priority];
-  const stateConfig = STATUS_CONFIG[task.state];
-  const createdDate = new Date(task.createdDate).toLocaleDateString();
+  const stateConfig = STATE_CONFIG[task.state];
+
+  if (!priorityConfig || !stateConfig) {
+    return null;
+  }
+
+  const createdDate = new Date(task.created_date).toLocaleDateString();
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      setDeleting(true);
+      await deleteTask(task.id);
+      setDeleting(false);
+      if (onDelete) onDelete();
+    }
+  };
 
   return (
-    <li className="task-item">
-      <div className="task-content">
+    <div className="task-item">
+      <div className="task-main">
         <div className="task-header">
-          <h3 className="task-title"> {task.title} </h3>
-          <div className="task-badges">
-            <span
-              className="badge priority"
-              style={{
-                "--badge-color": priorityConfig.color,
-                "--badge-bg": priorityConfig.bgColor,
-              }}
-            >
-              {stateConfig.label}
-            </span>
-            <span
-              className="badge state"
-              style={{
-                "--badge-color": stateConfig.color,
-                "--badge-bg": stateConfig.bgColor,
-              }}
-            >
-              {stateConfig.label}
-            </span>
+          <h3 className="task-title">{task.title}</h3>
+          <div className="task-meta">
+            <span className="task-date">{createdDate}</span>
           </div>
         </div>
-        {task.description && <p className="task-desc">{task.description}</p>}
-        <div className="task-footer">
-          <span className="task-date">Created: {createdDate}</span>
+
+        {task.description && (
+          <p className="task-description">{task.description}</p>
+        )}
+
+        <div className="task-badges">
+          <span
+            className="badge"
+            style={{
+              backgroundColor: priorityConfig.bgColor,
+              color: priorityConfig.color,
+            }}
+          >
+            {priorityConfig.label}
+          </span>
+          <span
+            className="badge"
+            style={{
+              backgroundColor: stateConfig.bgColor,
+              color: stateConfig.color,
+            }}
+          >
+            {stateConfig.label}
+          </span>
         </div>
       </div>
+
       <div className="task-actions">
-        <button className="btn edit" onClick={() => onEdit(task)}>
-          Edit
+        <button
+          className="btn edit-btn"
+          onClick={() => onEdit(task)}
+          title="Edit task"
+        >
+          ✏️
         </button>
-        <button className="btn danger" onClick={() => onDelete(task.id)}>
-          Delete
+        <button
+          className="btn delete-btn"
+          onClick={handleDelete}
+          disabled={deleting}
+          title="Delete task"
+        >
+          {deleting ? '...' : '🗑️'}
         </button>
       </div>
-    </li>
+    </div>
   );
 };
 

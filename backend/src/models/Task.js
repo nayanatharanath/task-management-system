@@ -25,26 +25,26 @@ async function createTask({
       state,
       outputId: {type: database.NUMBER, dir: database.BIND_OUT}
     };
-    
+
     const insertResult = await connection.execute(sql, binds, { autoCommit: true });
     console.log("Insert result:", insertResult.rowsAffected);
 
     taskId = insertResult.outBinds.outputId[0];
     console.log("Newly created task id: ", taskId);
     
-    
+
     // Get the last inserted task by fetching the most recent task for this user
     const selectSql = `SELECT id, user_id, title, description, created_date, priority, state, completed, updated_at 
-                      FROM tasks 
+    FROM tasks
                       WHERE id = :taskId`;
-    
+
     const result = await connection.execute(selectSql, { taskId }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
     console.log("Select result rows:", result.rows);
-    
+
     if (!result.rows || result.rows.length === 0) {
       throw new Error('Failed to retrieve created task - no rows returned');
     }
-    
+
     const row = result.rows[0];
     return {
       id: row.ID,
@@ -75,7 +75,7 @@ async function getAllTasks({
   limit = 50,
   offset = 0,
 }) {
-  let connection; 
+  let connection;
   try {
     connection = await getOracleDBConnection();
     let binds = {};
@@ -114,7 +114,7 @@ async function getAllTasks({
 
     return result.rows.map((row) => ({
       id: row.ID,
-      userId: row.USER_ID,
+      user_Id: row.USER_ID,
       title: row.TITLE,
       description: row.DESCRIPTION,
       createdDate: row.CREATED_DATE,

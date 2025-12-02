@@ -7,18 +7,12 @@ export const sidebarConstants = {
   NAV_LINKS: [
     { name: "Dashboard", path: "/dashboard" },
     { name: "Tasks", path: "/tasks" },
-    { name: "Analytics", path: "/analytics" },
-    { name: "Profile", path: "/profile" },
-    { name: "Settings", path: "/settings" },
   ],
 };
 
 export const ROUTES = {
   DASHBOARD: "/dashboard",
   TASKS: "/tasks",
-  ANALYTICS: "/analytics",
-  PROFILE: "/profile",
-  SETTINGS: "/settings",
 };
 
 export const dashboardConstants = {

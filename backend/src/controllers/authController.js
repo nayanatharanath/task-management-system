@@ -23,8 +23,14 @@ async function register(req, res, next) {
       password_hash: hashedPassword,
       name,
     });
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
     res.status(201).json({
       success: true,
+      token,
       message: "User registered successfully",
       user: {
         id: user.id,

@@ -16,24 +16,57 @@ const app = express();
 
 const PORT = process.env.PORT || 8000;
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+  method: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-type', 'Authorization'],
+  optionsSuccessStatus: 200,
+}
+
 // middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 10000, // limit each IP to 100 requests per windowMs
   })
 );
+
+// More lenient rate limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  skip: (req) => {
+    // Don't count successful requests as heavily
+    return false;
+  }
+});
+
+app.use(limiter);
+
+// Stricter rate limiter for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // 5 attempts per 15 minutes
+  message: 'Too many login attempts, please try again after 15 minutes.',
+  skipSuccessfulRequests: true, // Don't count successful requests
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 async function startServer() {
   try {
     await initiateOracleDB();
     // routes
-    app.use("/api/tasks", tasksRoutes);
-    app.use("/api/auth", authRoutes);
+    app.use("/api/tasks", authLimiter, tasksRoutes);
+    app.use("/api/auth", authLimiter, authRoutes);
 
     // error handler
     app.use(errorHandler);

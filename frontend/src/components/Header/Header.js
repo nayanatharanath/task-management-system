@@ -1,8 +1,10 @@
 import React from "react";
 import { headerConstants } from "../../utils/constants";
 import "./Header.css";
+import { useAuth } from "../../context/AuthContext";
 
-const Header = ({ onSidebarToggle, isLoggedIn, user }) => {
+const Header = ({ onSidebarToggle }) => {
+  const { user, logout } = useAuth();
   return (
     <header className="app-header">
       <div className="header-left">
@@ -16,15 +18,12 @@ const Header = ({ onSidebarToggle, isLoggedIn, user }) => {
         <span className="app-title">{headerConstants.APP_TITLE}</span>
       </div>
       <div className="header-right">
-        {isLoggedIn ? (
-          <div className="user-info">
-            <span>{user?.name || "User"}</span>
-            {/* Need to add dropdown for logout and profile */}
-          </div>
-        ) : (
-          <div className="auth-links">
-            <button className="login-btn">Login</button>
-            <button className="signup-btn">Sign Up</button>
+        {user && (
+          <div className="user-menu">
+            <span className="user-name">{user.name || user.email}</span>
+            <button className="btn logout" onClick={logout}>
+              Logout
+            </button>
           </div>
         )}
       </div>

@@ -5,50 +5,60 @@ import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Tasks from "./pages/Tasks/Tasks";
-import Analytics from "./pages/Analytics/Analytics";
-import Profile from "./pages/Profile/Profile";
-import Settings from "./pages/Settings/Settings";
 import { ROUTES } from "./utils/constants";
-import { TaskProvider } from "./pages/Tasks/TaskContext";
+import { TaskProvider } from "./context/TaskContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
 
-function App() {
+function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.innerWidth >= 768
   );
+  const { isAuthenticated } = useAuth();
   // memoized callback to toggle sidebar
   const handleSidebarToggle = useCallback(() => {
     setSidebarOpen((prev) => !prev);
   }, []);
 
-  const isLoggedIn = false;
-  const user = null;
+  if (!isAuthenticated) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to={"/login"} replace />} />
+      </Routes>
+    );
+  }
+
+  return (
+    <div className="app">
+      <Header onSidebarToggle={handleSidebarToggle} />
+      <div className="app-container">
+        <Sidebar isOpen={sidebarOpen} />
+        <main className="main-content">
+          <Routes>
+            <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+            <Route path={ROUTES.TASKS} element={<Tasks />} />
+            <Route
+              path="*"
+              element={<Navigate to={ROUTES.DASHBOARD} replace />}
+            />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function App() {
   return (
     <BrowserRouter>
-      <TaskProvider>
-        <div className="app">
-          <Header
-            onSidebarToggle={handleSidebarToggle}
-            isLoggedIn={isLoggedIn}
-            user={user}
-          />
-          <div className={`app-container ${sidebarOpen ? "sidebar-open" : ""}`}>
-            <Sidebar isOpen={sidebarOpen} />
-            <main className="main-content">
-              <Routes>
-                <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
-                <Route path={ROUTES.TASKS} element={<Tasks />} />
-                <Route path={ROUTES.ANALYTICS} element={<Analytics />} />
-                <Route path={ROUTES.PROFILE} element={<Profile />} />
-                <Route path={ROUTES.SETTINGS} element={<Settings />} />
-                <Route
-                  path="*"
-                  element={<Navigate to={ROUTES.DASHBOARD} replace />}
-                />
-              </Routes>
-            </main>
-          </div>
-        </div>
-      </TaskProvider>
+      <AuthProvider>
+        <TaskProvider>
+          <AppContent />
+        </TaskProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -3,7 +3,10 @@ import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 import { sidebarConstants } from "../../utils/constants";
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, onClose }) => {
+  const handleNavClick = () => {
+    if (window.innerWidth < 768 && onClose) onClose();
+  };
   return (
     <nav className={`sidebar ${isOpen ? "open" : ""}`}>
       <div className="sidebar-content">
@@ -15,6 +18,7 @@ const Sidebar = ({ isOpen }) => {
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
               }
+              onClick={handleNavClick}
             >
               <span>{link.name}</span>
             </NavLink>

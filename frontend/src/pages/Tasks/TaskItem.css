@@ -1,60 +1,121 @@
-.task-filters {
-  background: white;
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
   padding: 1rem;
+  background: white;
   border-radius: 8px;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.search-box {
-  margin-bottom: 1rem;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.5rem;
   border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.filter-section {
-  margin-bottom: 0.75rem;
+.task-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #2563eb;
 }
 
-.filter-label {
-  display: block;
-  font-size: 0.75rem;
-  color: #6b7280;
+.task-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
   margin-bottom: 0.5rem;
 }
 
-.filter-buttons {
+.task-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  word-break: break-word;
+}
+
+.task-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.task-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.task-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+.task-badges {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 0.25rem 0.75rem;
-  border: 1px solid var(--btn-color);
-  color: var(--btn-color);
-  background: transparent;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.filter-btn.active {
-  background: var(--btn-bg);
-  border-color: var(--btn-color);
+  margin-top: 0.75rem;
 }
 
 .badge {
-  padding: 0.25rem 0.5rem;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
   border-radius: 999px;
   font-size: 0.75rem;
-  color: var(--badge-color);
-  background: var(--badge-bg);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn.edit-btn,
+.btn.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn.edit-btn:hover {
+  transform: scale(1.2);
+}
+
+.btn.delete-btn:hover:not(:disabled) {
+  transform: scale(1.2);
+}
+
+.btn.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .task-item {
+    flex-direction: column;
+    padding: 0.75rem;
+  }
+
+  .task-header {
+    flex-direction: column;
+  }
+
+  .task-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }

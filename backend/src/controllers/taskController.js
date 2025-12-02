@@ -9,7 +9,15 @@ async function createTask(req, res, next) {
       priority = "MEDIUM",
       state = "NEW",
     } = req.body;
-    const user_id = req.user.id; // Get user_id from authenticated token
+    const user_id = req?.user?.userId; // Get user_id from authenticated token
+    if (!user_id) {
+      return res.status(401).json({
+        success: false,
+        error: "User not authenticated",
+      });
+    }
+    console.log("Creating task for user: ", user_id);
+
     const task = await taskModel.createTask({
       user_id,
       title,
@@ -29,8 +37,14 @@ async function createTask(req, res, next) {
 // GET (/api/tasks)
 async function getAllTasks(req, res, next) {
   try {
-    const { search = "", priority = "", state = "", limit = 50, offset = 0 } = req.query;
-    const user_id = req.user.id; // Get user_id from authenticated token
+    const {
+      search = "",
+      priority = "",
+      state = "",
+      limit = 50,
+      offset = 0,
+    } = req.query;
+    const user_id = req?.user?.userId; // Get user_id from authenticated token
     const tasks = await taskModel.getAllTasks({
       user_id: user_id,
       search: search.trim(),
@@ -52,9 +66,17 @@ async function getAllTasks(req, res, next) {
 // GET (/api/tasks/:id)
 async function getTaskById(req, res, next) {
   try {
-    const { id } = req.params;
-    const user_id = req.user.id; // Get user_id from authenticated token
-    const task = await taskModel.getTaskById(Number(id), user_id);
+    const id = parseInt(req.params.id);
+    const user_id = req?.user?.userId; // Get user_id from authenticated token
+    
+    if(!user_id || isNaN(id)){
+      return res.status(401).json({
+        success: false,
+        error: "Invalid"
+      })
+    }
+    
+    const task = await taskModel.getTaskById(id, user_id);
 
     if (!task) {
       return res.status(404).json({
@@ -75,8 +97,8 @@ async function getTaskById(req, res, next) {
 // UPDATE/PUT (/api/tasks/:id)
 async function updateTask(req, res, next) {
   try {
-    const { id } = req.params;
-    const user_id = req.user.id; // Get user_id from authenticated token
+    const id = parseInt(req.params.id);
+    const user_id = req?.user?.userId; // Get user_id from authenticated token
     const updates = req.body;
 
     const task = await taskModel.updateTask(Number(id), user_id, updates);
@@ -100,8 +122,8 @@ async function updateTask(req, res, next) {
 // DELETE (/api/tasks/:id)
 async function deleteTask(req, res, next) {
   try {
-    const { id } = req.params;
-    const user_id = req.user.id; // Get user_id from authenticated token
+    const id = parseInt(req.params.id);
+    const user_id = req?.user?.userId; // Get user_id from authenticated token
     const deleted = await taskModel.deleteTask(Number(id), user_id);
 
     if (!deleted) {

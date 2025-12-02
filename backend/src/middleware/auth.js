@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 function verifyToken(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
-    
+    console.log("Auth header: ", authHeader);
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
@@ -12,10 +13,15 @@ function verifyToken(req, res, next) {
       });
     }
 
-    const token = authHeader.slice(7); // Remove "Bearer " prefix
+    const token = authHeader?.split(" ")[1]; // Remove "Bearer " prefix
+    console.log("Token: ", token);
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+    console.log("Decoded token: ", decoded);
+
     req.user = decoded; // Attach user info to request
+    console.log("req.user set to: ", req.user);
+
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
